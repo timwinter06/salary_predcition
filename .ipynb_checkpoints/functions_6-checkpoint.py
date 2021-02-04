@@ -2,20 +2,24 @@
 import numpy as np
 import pandas as pd
 
-
-def sim(x,y):
+def simple(x,y):
     return x+y
 
-def TTWA_county_feature(df_train,df_TTWA):
+def TTWA_county_feature(df_train,df_TTWA,raw):
     
     TTWA_names = df_TTWA['TTWA Name']
     TTWA_names = TTWA_names.dropna()
-    raw_location = df_train.LocationRaw
+    
+    if raw:
+        raw_location = df_train.LocationRaw
+    else:
+        raw_location = df_train.LocationNormalized
     
     # Get indices for TTWA
-    #indices = get_TTWA(TTWA_names, raw_location)
+    indices = get_TTWA(TTWA_names, raw_location)
     
-    #df_train['TTWA'] = np.nan
+    df_train['TTWA'] = np.nan
+    
     for i in range(0,len(TTWA_names)):
         df_train.TTWA.loc[indices[i]] = TTWA_names.iloc[i]
     
@@ -26,7 +30,7 @@ def TTWA_county_feature(df_train,df_TTWA):
     
     indices = get_TTWA(counties.County, raw_location)
     
-    #df_train['County'] = np.nan
+    df_train['County'] = np.nan
     for i in range(0,len(counties)):
         df_train.County.loc[indices[i]] = counties.County.iloc[i]
         
