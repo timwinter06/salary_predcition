@@ -1,9 +1,15 @@
 ## Module containing funtions for sorting locations into buckets
 import numpy as np
 import pandas as pd
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize  
+from nltk.tokenize import RegexpTokenizer
+from nltk.stem import WordNetLemmatizer 
+from nltk.corpus import stopwords
 
-def simple(x,y):
-    return x+y
+# nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('wordnet')
 
 def TTWA_county_feature(df_train,df_TTWA,raw):
     
@@ -49,3 +55,47 @@ def get_TTWA(TTWA_names, raw_location):
         indices.append(raw_location[raw_location.str.contains(TTWA_names.iloc[i])].index)
         
     return indices
+
+#remove stop words
+def remove_stop_words(bag, unique):
+    stop_words = stopwords.words('english')
+    stop_words.append('k')
+    # tokenize
+    tokenizer = RegexpTokenizer(r'\w+')
+    word_tokens = tokenizer.tokenize(bag)
+    
+    words = []
+    for word in word_tokens:
+        words.append(word.lower())
+    # Get unique words only
+    if unique:
+        words_set = set(words)
+        words = list(words_set)
+    
+    no_stop_words = [w for w in words if not w in stop_words] 
+    
+    return no_stop_words
+
+
+def lemmatize_words(no_stop_words):
+    
+    lemma = WordNetLemmatizer() 
+    lemma_words = []
+
+    for w in no_stop_words:
+        lemma_words.append(lemma.lemmatize(w))
+    
+    return lemma_words
+
+def get_max_length(X_train, X_test, X_val):
+    lengths =[]
+    for x in X_test:
+        lengths.append(len(x))
+    for x in X_train:
+        lengths.append(len(x))
+    for x in X_val:
+        lengths.append(len(x))
+
+    max_length = max(lengths)
+    
+    return max_length
