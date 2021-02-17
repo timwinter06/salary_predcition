@@ -99,3 +99,12 @@ def get_max_length(X_train, X_test, X_val):
     max_length = max(lengths)
     
     return max_length
+
+def first_NLP(df):
+    word_list = []
+    for index, row in df.iterrows():
+        bag = row.FullDescription
+        ns = remove_stop_words(bag, unique = False)
+        lemma = lemmatize_words(ns)
+        word_list.append(lemma)
+    return word_list
